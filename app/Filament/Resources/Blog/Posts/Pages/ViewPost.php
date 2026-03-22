@@ -19,7 +19,9 @@ class ViewPost extends ViewRecord
     {
         parent::mount($record);
 
-        $this->getRecord()->increment('view_count');
+        /** @var Post */
+        $post = $this->getRecord();
+        $post->increment('view_count');
     }
 
     public function getTitle(): string | Htmlable

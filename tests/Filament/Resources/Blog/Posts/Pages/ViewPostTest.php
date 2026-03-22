@@ -11,6 +11,23 @@ it('can render the view page', function () {
         ->assertOk();
 });
 
+it('increments view_count when the view page is mounted', function () {
+    $record = Post::factory()->create(['view_count' => 0]);
+
+    Livewire::test(ViewPost::class, ['record' => $record->getRouteKey()]);
+
+    expect($record->fresh()->view_count)->toBe(1);
+});
+
+it('increments view_count on each visit', function () {
+    $record = Post::factory()->create(['view_count' => 5]);
+
+    Livewire::test(ViewPost::class, ['record' => $record->getRouteKey()]);
+    Livewire::test(ViewPost::class, ['record' => $record->getRouteKey()]);
+
+    expect($record->fresh()->view_count)->toBe(7);
+});
+
 it('can quick publish a draft post', function () {
     $record = Post::factory()->create(['published_at' => null]);
 

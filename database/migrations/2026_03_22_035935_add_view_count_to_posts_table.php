@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasColumn('posts', 'view_count')) {
+            return;
+        }
+
         Schema::table('posts', function (Blueprint $table): void {
             $table->unsignedInteger('view_count')->default(0)->after('published_at');
         });

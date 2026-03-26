@@ -50,6 +50,12 @@ class OrdersTable
                         Sum::make()
                             ->money(),
                     ]),
+                TextColumn::make('coupon.code')
+                    ->label('Coupon')
+                    ->badge()
+                    ->color('success')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('shipping_price')
                     ->label('Shipping cost')
                     ->searchable()

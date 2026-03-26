@@ -57,9 +57,20 @@ class PostsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('view_count')
+                    ->label('Views')
+                    ->sortable()
+                    ->numeric()
+                    ->toggleable(),
+
                 TextColumn::make('published_at')
                     ->label('Publishing date')
                     ->date(),
+
+                TextColumn::make('view_count')
+                    ->label('Views')
+                    ->sortable()
+                    ->alignEnd(),
             ])
             ->filters([
                 Filter::make('published_at')

@@ -5,6 +5,8 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\BudgetBurnRateChart;
 use App\Filament\Widgets\DepartmentLeaveLoadChart;
 use App\Filament\Widgets\ProjectHealthChart;
+use App\Filament\Widgets\UpcomingBirthdaysWidget;
+use App\Filament\Widgets\UpcomingReviewsWidget;
 use App\Filament\Widgets\UtilizationRateChart;
 use App\Filament\Widgets\WorkforceInsightsStats;
 use BackedEnum;
@@ -24,6 +26,8 @@ class HrDashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            UpcomingBirthdaysWidget::class,
+            UpcomingReviewsWidget::class,
             WorkforceInsightsStats::class,
             DepartmentLeaveLoadChart::class,
             ProjectHealthChart::class,

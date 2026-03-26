@@ -30,16 +30,19 @@ class Order extends Model
     protected $fillable = [
         'number',
         'total_price',
+        'discount_amount',
         'status',
         'currency',
         'shipping_price',
         'shipping_method',
         'notes',
+        'coupon_id',
     ];
 
     protected $casts = [
         'currency' => CurrencyCode::class,
         'status' => OrderStatus::class,
+        'discount_amount' => 'decimal:2',
     ];
 
     /** @return MorphOne<OrderAddress, $this> */
@@ -64,5 +67,11 @@ class Order extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /** @return BelongsTo<Coupon, $this> */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }

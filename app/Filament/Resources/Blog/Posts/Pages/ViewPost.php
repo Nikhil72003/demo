@@ -15,6 +15,15 @@ class ViewPost extends ViewRecord
 {
     protected static string $resource = PostResource::class;
 
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        /** @var Post */
+        $post = $this->getRecord();
+        $post->increment('view_count');
+    }
+
     public function getTitle(): string | Htmlable
     {
         /** @var Post */

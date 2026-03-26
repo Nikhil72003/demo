@@ -6,6 +6,7 @@ use App\Enums\CurrencyCode;
 use App\Enums\OrderStatus;
 use App\Filament\Resources\Shop\Products\ProductResource;
 use App\Forms\Components\AddressForm;
+use App\Models\Shop\Coupon;
 use App\Models\Shop\Order;
 use App\Models\Shop\Product;
 use Filament\Actions\Action;
@@ -116,6 +117,17 @@ class OrderForm
                 ->options(CurrencyCode::class)
                 ->searchable()
                 ->required(),
+
+            Select::make('coupon_id')
+                ->label('Coupon')
+                ->options(fn (): array => Coupon::query()
+                    ->where('is_active', true)
+                    ->get()
+                    ->mapWithKeys(fn (Coupon $coupon): array => [$coupon->id => $coupon->code . ' — ' . ($coupon->discount_type->getLabel())])
+                    ->all())
+                ->searchable()
+                ->nullable()
+                ->placeholder('No coupon'),
 
             AddressForm::make('address')
                 ->columnSpan('full'),

@@ -71,4 +71,16 @@ class Employee extends Model
     {
         return $this->hasMany(Expense::class);
     }
+
+    /** @return HasMany<PerformanceReview, $this> */
+    public function performanceReviews(): HasMany
+    {
+        return $this->hasMany(PerformanceReview::class);
+    }
+
+    /** @return HasMany<PerformanceReview, $this> */
+    public function reviewsConducted(): HasMany
+    {
+        return $this->hasMany(PerformanceReview::class, 'reviewer_id');
+    }
 }

@@ -10,10 +10,26 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class PerformanceReviewForm
 {
+    private static function isSubmittedOrAcknowledged(mixed $status): bool
+    {
+        return static::isStatus($status, ReviewStatus::Submitted)
+            || static::isStatus($status, ReviewStatus::Acknowledged);
+    }
+
+    private static function isStatus(mixed $status, ReviewStatus $expected): bool
+    {
+        if ($status instanceof ReviewStatus) {
+            return $status === $expected;
+        }
+
+        return ReviewStatus::tryFrom((string) $status) === $expected;
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -44,6 +60,7 @@ class PerformanceReviewForm
                             ->inline()
                             ->required()
                             ->default(ReviewStatus::Draft)
+                            ->live()
                             ->columnSpanFull(),
 
                         DatePicker::make('review_period_start')
@@ -59,12 +76,16 @@ class PerformanceReviewForm
                     ]),
 
                 Section::make('Evaluation')
+                    ->description(fn (Get $get): ?string => static::isSubmittedOrAcknowledged($get('status'))
+                        ? 'Rating and manager comments are required before submitting.'
+                        : null)
                     ->columns(1)
                     ->columnSpanFull()
                     ->schema([
                         ToggleButtons::make('rating')
                             ->options(ReviewRating::class)
-                            ->inline(),
+                            ->inline()
+                            ->required(fn (Get $get): bool => static::isSubmittedOrAcknowledged($get('status'))),
 
                         Textarea::make('goals_achieved')
                             ->label('Goals Achieved')
@@ -74,12 +95,15 @@ class PerformanceReviewForm
                         Textarea::make('manager_comments')
                             ->label('Manager Comments')
                             ->rows(4)
-                            ->maxLength(65535),
+                            ->maxLength(65535)
+                            ->required(fn (Get $get): bool => static::isSubmittedOrAcknowledged($get('status'))),
 
                         Textarea::make('employee_comments')
                             ->label('Employee Comments')
+                            ->helperText('Filled in by the employee when acknowledging the review.')
                             ->rows(4)
-                            ->maxLength(65535),
+                            ->maxLength(65535)
+                            ->required(fn (Get $get): bool => static::isStatus($get('status'), ReviewStatus::Acknowledged)),
                     ]),
             ]);
     }
